@@ -28,7 +28,21 @@ const {
 } = Astro.props;
 ---
 
-<div class="giscus"></div>
+<div
+  class="giscus"
+  data-repo={repo}
+  data-repo-id={repoId}
+  data-category={category}
+  data-category-id={categoryId}
+  data-mapping={mapping}
+  data-strict={strict}
+  data-reactions-enabled={reactionsEnabled}
+  data-emit-metadata={emitMetadata}
+  data-input-position={inputPosition}
+  data-theme={theme}
+  data-lang={lang}
+>
+</div>
 <!-- 
 <script
   src="https://giscus.app/client.js"
@@ -47,7 +61,7 @@ const {
   async
 ></script> 
 -->
-<script src="https://giscus.app/client.js"
+<script is:inline src="https://giscus.app/client.js"
         data-repo="51nav/hugo-theme-nav-starter"
         data-repo-id="R_kgDONUj9IA"
         data-category="Announcements"

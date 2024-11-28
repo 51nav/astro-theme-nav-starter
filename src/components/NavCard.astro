@@ -49,7 +49,7 @@ const logoUrl = getFaviconUrl(url);
   </a>
 </div>
 
-<script define:vars={{ styles }}>
+<script is:inline define:vars={{ styles }}>
   // 渲染 logo 到 canvas
   function renderLogo(canvas, url, siteTitle) {
     const ctx = canvas.getContext('2d');

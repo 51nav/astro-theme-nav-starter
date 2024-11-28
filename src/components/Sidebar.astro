@@ -18,7 +18,7 @@ const { menuItems } = configData as { menuItems: MenuItem[] };
               class={styles.link}
               data-section={item.href.slice(1)}
               data-type="main"
-              onclick="scrollToSection(event, this.getAttribute('href'))"
+              onclick="(e) => scrollToSection(e, this.getAttribute('href'))"
             >
               <IconComponent 
                 icon={item.icon || ''} 
@@ -58,7 +58,7 @@ const { menuItems } = configData as { menuItems: MenuItem[] };
                         data-parent-section={item.href.slice(1)}
                         data-type="sub"
                         data-tab-index={subIndex}
-                        onclick="scrollToSection(event, this.getAttribute('href'))"
+                        onclick="(e) => scrollToSection(e, this.getAttribute('href'))"
                       >
                         <IconComponent icon={subItem.icon} class={styles.submenuIcon} />
                         <span class={styles.text}>{subItem.name}</span>
