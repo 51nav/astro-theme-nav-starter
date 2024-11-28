@@ -1,4 +1,4 @@
-import QRCode from 'qrcode';
+import * as QRCode from 'qrcode';
 
 declare global {
   interface Window {
@@ -7,7 +7,7 @@ declare global {
   }
 }
 
-window.showQRCode = async (event: MouseEvent) => {
+export const showQRCode = async (event: MouseEvent): Promise<void> => {
   const button = event.currentTarget as HTMLButtonElement;
   const url = button.dataset.url;
   if (!url) return;

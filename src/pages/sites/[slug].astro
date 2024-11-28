@@ -110,7 +110,7 @@ const logoUrl = getFaviconUrl(url);
             <button
               type="button"
               class="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700"
-              onclick="showQRCode(event)"
+              onclick="(e) => showQRCode(e)"
               data-url={url}
             >
               <span>手机查看</span>
