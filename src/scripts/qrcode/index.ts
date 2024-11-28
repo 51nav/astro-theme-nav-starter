@@ -2,12 +2,12 @@ import * as QRCode from 'qrcode';
 
 declare global {
   interface Window {
-    showQRCode: (event: MouseEvent) => Promise<void>;
+    showQRCode: (event: MouseEvent) => void;
     closeQRCode: () => void;
   }
 }
 
-export const showQRCode = async (event: MouseEvent): Promise<void> => {
+window.showQRCode = (event: MouseEvent) => {
   const button = event.currentTarget as HTMLButtonElement;
   const url = button.dataset.url;
   if (!url) return;
@@ -16,24 +16,26 @@ export const showQRCode = async (event: MouseEvent): Promise<void> => {
   const qrContainer = document.getElementById('qrcode');
   if (!modal || !qrContainer) return;
 
-  try {
-    const canvas = document.createElement('canvas');
-    await QRCode.toCanvas(canvas, url, {
-      width: 256,
-      margin: 2,
-      color: {
-        dark: '#000000',
-        light: '#ffffff'
-      },
-      errorCorrectionLevel: 'H'
-    });
+  void (async () => {
+    try {
+      const canvas = document.createElement('canvas');
+      await QRCode.toCanvas(canvas, url, {
+        width: 256,
+        margin: 2,
+        color: {
+          dark: '#000000',
+          light: '#ffffff'
+        },
+        errorCorrectionLevel: 'H'
+      });
 
-    qrContainer.innerHTML = '';
-    qrContainer.appendChild(canvas);
-    modal.style.display = 'flex';
-  } catch (err) {
-    console.error('Failed to generate QR code:', err);
-  }
+      qrContainer.innerHTML = '';
+      qrContainer.appendChild(canvas);
+      modal.style.display = 'flex';
+    } catch (err) {
+      console.error('Failed to generate QR code:', err);
+    }
+  })();
 };
 
 window.closeQRCode = () => {
