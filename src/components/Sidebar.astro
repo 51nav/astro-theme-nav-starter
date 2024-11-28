@@ -14,11 +14,11 @@ const { menuItems } = configData as { menuItems: MenuItem[] };
         <li>
           {item.type === 'single' ? (
             <a
-              href={item.href}
+              href={`#${item.href}`}
               class={styles.link}
-              data-section={item.href.slice(1)}
+              data-section={item.href}
               data-type="main"
-              onclick="(e) => scrollToSection(e, this.getAttribute('href'))"
+              data-scroll
             >
               <IconComponent 
                 icon={item.icon || ''} 
@@ -31,7 +31,7 @@ const { menuItems } = configData as { menuItems: MenuItem[] };
               <button
                 type="button"
                 class={`${styles.link} ${styles.hasSubmenu}`}
-                data-section={item.href.slice(1)}
+                data-section={item.href}
                 data-type="main"
                 aria-expanded="false"
                 data-submenu-trigger
@@ -52,13 +52,13 @@ const { menuItems } = configData as { menuItems: MenuItem[] };
                   {item.submenu.map((subItem, subIndex) => (
                     <li>
                       <a
-                        href={subItem.href}
+                        href={`#${subItem.href}`}
                         class={styles.submenuLink}
-                        data-section={item.href.slice(1)}
-                        data-parent-section={item.href.slice(1)}
+                        data-section={subItem.href}
+                        data-parent-section={item.href}
                         data-type="sub"
                         data-tab-index={subIndex}
-                        onclick="(e) => scrollToSection(e, this.getAttribute('href'))"
+                        data-scroll
                       >
                         <IconComponent icon={subItem.icon} class={styles.submenuIcon} />
                         <span class={styles.text}>{subItem.name}</span>
@@ -76,6 +76,7 @@ const { menuItems } = configData as { menuItems: MenuItem[] };
 </aside>
 
 <script>
+  // 初始化侧边栏
   function initSidebar() {
     const menuButtons = document.querySelectorAll('[data-submenu-trigger]');
     menuButtons.forEach(button => {
@@ -92,28 +93,29 @@ const { menuItems } = configData as { menuItems: MenuItem[] };
         }
       });
     });
+
+    // 处理导航点击
+    document.querySelectorAll('a[data-scroll]').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const href = link.getAttribute('href');
+        if (!href) return;
+
+        // 如果不在首页，先返回首页
+        if (!window.location.pathname.endsWith('/')) {
+          window.location.href = `/${href}`;
+          return;
+        }
+
+        // 在首页时滚动到对应区域
+        const targetId = href.replace('#', '');
+        const targetElement = document.getElementById(targetId);
+        if (targetElement) {
+          targetElement.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    });
   }
-
-  // 添加滚动处理函数
-  function handleScroll(event: Event, href: string | null): void {
-    event.preventDefault();
-    if (!href) return;
-
-    // 如果在详情页，先返回首页
-    if (!window.location.pathname.endsWith('/')) {
-      window.location.href = `/${href}`;
-      return;
-    }
-
-    // 在首页时滚动到对应区域
-    const targetElement = document.querySelector(href);
-    if (targetElement) {
-      targetElement.scrollIntoView({ behavior: 'smooth' });
-    }
-  }
-
-  // 将函数赋值给 window 对象
-  window.scrollToSection = handleScroll;
 
   document.addEventListener('DOMContentLoaded', initSidebar);
 </script> 

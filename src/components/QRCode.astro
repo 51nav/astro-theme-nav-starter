@@ -1,0 +1,162 @@
+---
+interface Props {
+  title: string;
+  url: string;
+}
+
+const { title, url } = Astro.props;
+---
+
+<div class="qr-modal" id="qrModal">
+  <div class="qr-content">
+    <div class="qr-header">
+      <h3>手机扫码访问</h3>
+      <button class="close-button" id="closeQRCode">&times;</button>
+    </div>
+    <div class="qr-code" id="qrCode"></div>
+    <div class="qr-info">
+      <p class="qr-title">{title}</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  // 动态导入 QRCode
+  const QRCodeModule = await import('qrcode');
+  const QRCode = QRCodeModule.default;
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const modal = document.getElementById('qrModal');
+    const showButton = document.getElementById('showQRCode');
+    const closeButton = document.getElementById('closeQRCode');
+    const qrContainer = document.getElementById('qrCode');
+    
+    const clearQRCode = () => {
+      if (qrContainer) {
+        while (qrContainer.firstChild) {
+          qrContainer.removeChild(qrContainer.firstChild);
+        }
+      }
+    };
+
+    const generateQRCode = async () => {
+      clearQRCode();
+      
+      if (qrContainer) {
+        const button = document.getElementById('showQRCode');
+        const siteUrl = button?.dataset.url;
+        
+        if (!siteUrl) {
+          const message = document.createElement('div');
+          message.style.padding = '2rem';
+          message.style.color = '#666';
+          message.textContent = '暂无可用链接';
+          qrContainer.appendChild(message);
+          return;
+        }
+
+        try {
+          const canvas = document.createElement('canvas');
+          await QRCode.toCanvas(canvas, siteUrl, {
+            width: 200,
+            margin: 2,
+            color: {
+              dark: '#2937f0',
+              light: '#ffffff'
+            }
+          });
+          qrContainer.appendChild(canvas);
+          modal.style.display = 'flex';
+        } catch (error) {
+          console.error('Failed to generate QR code:', error);
+        }
+      }
+    };
+
+    showButton?.addEventListener('click', () => {
+      generateQRCode();
+    });
+
+    closeButton?.addEventListener('click', () => {
+      modal.style.display = 'none';
+      clearQRCode();
+    });
+
+    modal?.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.style.display = 'none';
+        clearQRCode();
+      }
+    });
+  });
+</script>
+
+<style>
+  .qr-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+
+  .qr-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 320px;
+    text-align: center;
+  }
+
+  .qr-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .qr-header h3 {
+    margin: 0;
+    color: #333;
+  }
+
+  .close-button {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #666;
+    cursor: pointer;
+    padding: 0.5rem;
+  }
+
+  .close-button:hover {
+    color: #333;
+  }
+
+  .qr-code {
+    margin: 1rem auto;
+    padding: 1rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+
+  .qr-info {
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .qr-title {
+    margin: 0;
+    color: #666;
+  }
+</style> 

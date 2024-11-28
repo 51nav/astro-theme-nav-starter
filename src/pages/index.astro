@@ -7,10 +7,12 @@ import configData from '../data/config.json';
 const config = configData as Config;
 ---
 
-<Layout title="Affiliate导航" description="Affiliate专属导航网站">
+<Layout title="Affiliate导航" description="专业的Affiliate导航网站">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     {config.menuItems.map((item, index) => (
-      <Category item={item} index={index} />
+      <div id={item.href}>
+        <Category item={item} index={index} />
+      </div>
     ))}
   </div>
 </Layout>

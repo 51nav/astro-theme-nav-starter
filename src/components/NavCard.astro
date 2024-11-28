@@ -15,8 +15,6 @@ const getFaviconUrl = (siteUrl: string): string => {
     return '';
   }
 };
-
-// 使用 getFaviconUrl 直接在 img 标签中
 ---
 
 <div class={styles.card}>
@@ -30,7 +28,11 @@ const getFaviconUrl = (siteUrl: string): string => {
     decoding="sync"
     onerror={`this.onerror=null; this.src='https://${new URL(url).hostname}/favicon.ico'`}
   />
-  <a href={import.meta.env.BASE_URL + `/sites/${title.toLowerCase()}`} class={styles.link}>
+  <a 
+    href={`/sites/${encodeURIComponent(title.toLowerCase())}`} 
+    class={styles.link}
+    data-no-scroll
+  >
     <div class={styles.content}>
       <h3 class={styles.title}>{title}</h3>
       <p class={styles.description}>{description}</p>
@@ -47,11 +49,20 @@ const getFaviconUrl = (siteUrl: string): string => {
       <path fill="currentColor" d="M5 3v18h18v-2H7V3H5m15 0v8h-2V6.41l-7.29 7.3-1.42-1.42L16.59 5H13V3h7Z"/>
     </svg>
   </a>
+  <button
+    type="button"
+    class="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700"
+    data-url={url}
+  >
+    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M3 11h8V3H3v8zm2-6h4v4H5V5zM3 21h8v-8H3v8zm2-6h4v4H5v-4zM13 3v8h8V3h-8zm6 6h-4V5h4v4zM13 13h2v2h-2v-2zm0 4h2v2h-2v-2zm4 0h2v2h-2v-2zm0-4h2v2h-2v-2z"/>
+    </svg>
+  </button>
 </div>
 
-<script is:inline define:vars={{ styles }}>
+<script define:vars={{ styles }}>
   // 渲染 logo 到 canvas
-  function renderLogo(canvas, url, siteTitle) {
+  const renderLogo = (canvas, url, siteTitle) => {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
@@ -84,7 +95,7 @@ const getFaviconUrl = (siteUrl: string): string => {
     } catch (error) {
       console.error('Error loading favicon:', error);
     }
-  }
+  };
 
   // 渲染所有 logo
   document.querySelectorAll('canvas[id^="logo-"]').forEach((canvas) => {
