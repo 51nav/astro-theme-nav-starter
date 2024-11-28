@@ -8,37 +8,20 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
-      - name: Checkout source repo
-        uses: actions/checkout@v4
-
-      - name: Install and Build
-        uses: withastro/action@v3
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
-          path: .
-          verbose: true
+          node-version: 18
+      
+      - name: Install dependencies
+        run: npm install
 
-      - name: Debug Build Output
-        run: |
-          echo "=== Contents of dist directory ==="
-          ls -la dist/
-          echo "=== Contents of dist/sitemap* ==="
-          find dist/ -name "sitemap*" -type f -exec ls -la {} \;
-          echo "=== Sitemap contents ==="
-          cat dist/sitemap-index.xml
-          cat dist/sitemap-0.xml
+      - name: Build website
+        run: npm run build
 
-      - name: Deploy to GitHub Pages repo
+      - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
-          personal_token: ${{ secrets.GIT_TOKEN }}
-          external_repository: ${{ secrets.GIT_REPO }}
-          publish_branch: main
+          github_token: ${{ secrets.GIT_TOKEN }}
           publish_dir: ./dist
-          force_orphan: true
-          user_name: 'github-actions[bot]'
-          user_email: 'github-actions[bot]@users.noreply.github.com'
-          commit_message: 'Deploy to GitHub Pages'
-          full_commit_message: 'Deploy to GitHub Pages from ${{ github.sha }}'

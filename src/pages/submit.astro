@@ -1,6 +1,5 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Giscus from '../components/Giscus.astro';
 ---
 
 <Layout title="收录提交 - Affiliate导航" description="提交网站收录申请">
@@ -82,31 +81,24 @@ import Giscus from '../components/Giscus.astro';
         </button>
       </form>
 
-      <!-- 在表单下方添加 Giscus 评论区来收集提交 -->
+      <!-- 评论区容器 -->
       <div class="mt-8 pt-8 border-t">
         <p class="text-sm text-gray-500 mb-4">
           请在下方评论区提交您的网站信息，我们会尽快审核。
         </p>
-        <Giscus
-          repo="你的用户名/仓库名"
-          repoId="你的仓库ID"
-          category="收录提交"
-          categoryId="你的分类ID"
-          mapping="pathname"
-          theme="light"
-        />
+        <div class="giscus"></div>
       </div>
     </div>
   </div>
 </Layout>
 
-<script>
+<script is:inline>
   const form = document.getElementById('submitForm');
   
   form?.addEventListener('submit', (e) => {
     e.preventDefault();
     
-    const formData = new FormData(e.target as HTMLFormElement);
+    const formData = new FormData(e.target);
     const data = {
       title: formData.get('title'),
       url: formData.get('url'),
@@ -125,24 +117,50 @@ import Giscus from '../components/Giscus.astro';
 - **分类**：${data.category}
 
 #### 优势特点：
-${data.advantages?.map(adv => `- ${adv}`).join('\n')}
+${data.advantages?.map(adv => '- ' + adv).join('\n')}
 
 ---
 请审核，谢谢！
     `.trim();
 
-    // 找到 giscus iframe
-    const iframe = document.querySelector<HTMLIFrameElement>('iframe.giscus-frame');
-    if (!iframe?.contentWindow) return;
+    // 等待 giscus iframe 加载完成
+    const waitForIframe = setInterval(() => {
+      const iframe = document.querySelector('iframe.giscus-frame');
+      if (iframe?.contentWindow) {
+        clearInterval(waitForIframe);
+        
+        // 将格式化的内容发送到评论框
+        iframe.contentWindow.postMessage({ 
+          giscus: { 
+            setComment: content
+          } 
+        }, 'https://giscus.app');
 
-    // 将格式化的内容发送到评论框
-    iframe.contentWindow.postMessage({ 
-      giscus: { 
-        setComment: content
-      } 
-    }, 'https://giscus.app');
+        // 清空表单
+        e.target.reset();
+      }
+    }, 1000);
 
-    // 清空表单
-    (e.target as HTMLFormElement).reset();
+    // 5秒后停止等待
+    setTimeout(() => clearInterval(waitForIframe), 5000);
   });
-</script> 
+</script>
+
+<!-- Giscus 脚本 -->
+<script
+  is:inline
+  src="https://giscus.app/client.js"
+  data-repo="您的用户名/您的仓库名"
+  data-repo-id="您的仓库ID"
+  data-category="您选择的分类"
+  data-category-id="您的分类ID"
+  data-mapping="pathname"
+  data-strict="0"
+  data-reactions-enabled="1"
+  data-emit-metadata="0"
+  data-input-position="bottom"
+  data-theme="light"
+  data-lang="zh-CN"
+  crossorigin="anonymous"
+  async
+></script> 
