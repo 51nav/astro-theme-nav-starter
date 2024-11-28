@@ -5,7 +5,7 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://your-website.com',
+  site: 'https://51nav.github.io/astro-theme-nav-smple',
   integrations: [
     tailwind(),
     sitemap({
