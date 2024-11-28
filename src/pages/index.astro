@@ -1,0 +1,16 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Category from '../components/Category.astro';
+import type { Config } from '../types/config';
+import configData from '../data/config.json';
+
+const config = configData as Config;
+---
+
+<Layout title="Affiliate导航" description="Affiliate专属导航网站">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    {config.menuItems.map((item, index) => (
+      <Category item={item} index={index} />
+    ))}
+  </div>
+</Layout>

@@ -1,0 +1,119 @@
+---
+import styles from '../styles/components/sidebar.module.css';
+import type { MenuItem } from '../types/config';
+import configData from '../data/config.json';
+import IconComponent from './IconComponent.astro';
+
+const { menuItems } = configData as { menuItems: MenuItem[] };
+---
+
+<aside class={styles.sidebar}>
+  <nav class={styles.nav}>
+    <ul class={styles.list}>
+      {menuItems.map((item) => (
+        <li>
+          {item.type === 'single' ? (
+            <a
+              href={item.href}
+              class={styles.link}
+              data-section={item.href.slice(1)}
+              data-type="main"
+              onclick="scrollToSection(event, this.getAttribute('href'))"
+            >
+              <IconComponent 
+                icon={item.icon || ''} 
+                class={styles.icon || undefined} 
+              />
+              <span class={styles.text}>{item.name}</span>
+            </a>
+          ) : (
+            <div>
+              <button
+                type="button"
+                class={`${styles.link} ${styles.hasSubmenu}`}
+                data-section={item.href.slice(1)}
+                data-type="main"
+                aria-expanded="false"
+                data-submenu-trigger
+              >
+                <IconComponent 
+                  icon={item.icon || ''} 
+                  class={styles.icon || undefined} 
+                />
+                <span class={styles.text}>{item.name}</span>
+                <span class={styles.arrow}>
+                  <svg viewBox="0 0 24 24" class={styles.arrowIcon}>
+                    <path fill="currentColor" d="M7 10l5 5 5-5H7z"/>
+                  </svg>
+                </span>
+              </button>
+              {item.submenu && (
+                <ul class={styles.submenu} data-expanded="false">
+                  {item.submenu.map((subItem, subIndex) => (
+                    <li>
+                      <a
+                        href={subItem.href}
+                        class={styles.submenuLink}
+                        data-section={item.href.slice(1)}
+                        data-parent-section={item.href.slice(1)}
+                        data-type="sub"
+                        data-tab-index={subIndex}
+                        onclick="scrollToSection(event, this.getAttribute('href'))"
+                      >
+                        <IconComponent icon={subItem.icon} class={styles.submenuIcon} />
+                        <span class={styles.text}>{subItem.name}</span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          )}
+        </li>
+      ))}
+    </ul>
+  </nav>
+</aside>
+
+<script>
+  function initSidebar() {
+    const menuButtons = document.querySelectorAll('[data-submenu-trigger]');
+    menuButtons.forEach(button => {
+      button.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const isExpanded = button.getAttribute('aria-expanded') === 'true';
+        button.setAttribute('aria-expanded', (!isExpanded).toString());
+        
+        const submenu = button.nextElementSibling;
+        if (submenu) {
+          submenu.setAttribute('data-expanded', (!isExpanded).toString());
+        }
+      });
+    });
+  }
+
+  // 添加滚动处理函数
+  function handleScroll(event: Event, href: string | null): void {
+    event.preventDefault();
+    if (!href) return;
+
+    // 如果在详情页，先返回首页
+    if (!window.location.pathname.endsWith('/')) {
+      window.location.href = `/${href}`;
+      return;
+    }
+
+    // 在首页时滚动到对应区域
+    const targetElement = document.querySelector(href);
+    if (targetElement) {
+      targetElement.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+
+  // 将函数赋值给 window 对象
+  window.scrollToSection = handleScroll;
+
+  document.addEventListener('DOMContentLoaded', initSidebar);
+</script> 

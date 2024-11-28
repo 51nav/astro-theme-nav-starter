@@ -1,0 +1,557 @@
+{
+  "site": {
+    "title": "Affiliate导航",
+    "description": "无忧导航",
+    "logo": {
+      "text": "Affiliate导航",
+      "href": "/"
+    }
+  },
+  "menuItems": [
+    {
+      "name": "追踪系统",
+      "href": "#追踪系统",
+      "icon": "mdi:chart-line",
+      "type": "single",
+      "sites": [
+        {
+          "title": "Binom",
+          "description": "老毛子写的高性能tracker",
+          "url": "https://binom.org",
+          "advantages": [
+            "跳转速度快",
+            "价格是基于服务器的，而不是像其他的服务商那样基于点击数量",
+            "生成报表的速度快",
+            "无限域名(additional domains)",
+            "多用户管理系统",
+            "提供API",
+            "售后支持相应速度快"
+          ],
+          "related": [
+            {
+              "title": "Voluum",
+              "description": "业界成名较早的tracker之一"
+            },
+            {
+              "title": "CPVLAB Pro",
+              "description": "CPVLab分家后的作品"
+            },
+            {
+              "title": "Bemob",
+              "description": "捷克出品的优质Tracker"
+            }
+          ]
+        },
+        {
+          "title": "Voluum",
+          "description": "老牌云追踪系统，功能完善，价格较贵",
+          "url": "https://voluum.com",
+          "advantages": [
+            "云端部署，无需自己维护服务器",
+            "功能完善，界面美观",
+            "报表系统强大",
+            "支持多用户管理",
+            "有移动端APP",
+            "集成了很多主流的广告平台"
+          ],
+          "related": [
+            {
+              "title": "Binom",
+              "description": "性价比最高的自建系统"
+            },
+            {
+              "title": "Thrive",
+              "description": "新一代云追踪系统"
+            }
+          ]
+        },
+        {
+          "title": "Thrive",
+          "description": "新一代云追踪系统，界面美观，功能强大",
+          "url": "https://thrivetracker.com",
+          "advantages": [
+            "界面设计现代美观",
+            "云端部署，即买即用",
+            "支持自定义变量",
+            "内置机器学习优化",
+            "支持多种数据出格式",
+            "价格合理"
+          ],
+          "related": [
+            {
+              "title": "Voluum",
+              "description": "老牌云追踪系统"
+            },
+            {
+              "title": "RedTrack",
+              "description": "性价比高的云追踪系统"
+            }
+          ]
+        },
+        {
+          "title": "RedTrack",
+          "description": "性价比高的云追踪系统，功能齐全",
+          "url": "https://redtrack.io",
+          "advantages": [
+            "价格实惠",
+            "功能齐全",
+            "支持自定义报表",
+            "集成了大量广告平台",
+            "支持团队协作",
+            "有免费套餐可以试用"
+          ],
+          "related": [
+            {
+              "title": "Thrive",
+              "description": "新一代云追踪系统"
+            },
+            {
+              "title": "Voluum",
+              "description": "老牌云追踪系统"
+            }
+          ]
+        },
+        {
+          "title": "FunnelFlux",
+          "description": "自建追踪系统，支持多用户，可视化强",
+          "url": "https://funnelflux.com",
+          "advantages": [
+            "可视化斗分析",
+            "支持多用户管理",
+            "自建部署，数据安全",
+            "强大的数据分析功能",
+            "灵活的定价模式",
+            "优秀的可视化报表"
+          ],
+          "related": [
+            {
+              "title": "Binom",
+              "description": "性价比最高的自建系统"
+            },
+            {
+              "title": "Voluum",
+              "description": "老牌云追踪系统"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "SPY服务",
+      "href": "#spy服务",
+      "icon": "mdi:eye",
+      "type": "single",
+      "sites": [
+        {
+          "title": "Adplexity",
+          "description": "创立最早也是最优秀的spy工具",
+          "url": "https://adplexity.com",
+          "advantages": [
+            "支持多种广告类型：Mobile, Native, Adult, Display, Carrier等",
+            "数据更新及时",
+            "界面操作简单直观",
+            "数据量大而全",
+            "支持多种数据导出格式",
+            "提供API接口"
+          ],
+          "related": [
+            {
+              "title": "Anstrex",
+              "description": "专注于Push和Native广告的SPY"
+            },
+            {
+              "title": "AdVault",
+              "description": "最好的原生广告SPY服务商之一"
+            }
+          ]
+        },
+        {
+          "title": "Anstrex",
+          "description": "专注于Push和Native广告的SPY",
+          "url": "https://anstrex.com",
+          "advantages": [
+            "Push和Native广告数据最全面",
+            "价格相对实惠",
+            "支持Landing Page下载",
+            "数据更新快",
+            "提供详细的广告投放数据",
+            "界面友好，易于使用"
+          ],
+          "related": [
+            {
+              "title": "Adplexity",
+              "description": "最全面的广告spy工具"
+            },
+            {
+              "title": "SpyOver",
+              "description": "原生广告监控和分析服务商"
+            }
+          ]
+        },
+        {
+          "title": "AdVault",
+          "description": "最好的原生广告(Native Ads) SPY服务商之一",
+          "url": "https://advault.com",
+          "advantages": [
+            "专注于原生广告数据",
+            "覆盖全球主要广告网络",
+            "提供详细的投放策略分析",
+            "支持广告创意下载",
+            "数据更新实时",
+            "价格合理"
+          ],
+          "related": [
+            {
+              "title": "Anstrex",
+              "description": "专注于Push和Native广告的SPY"
+            },
+            {
+              "title": "Adplexity",
+              "description": "最全面的广告spy工具"
+            }
+          ]
+        },
+        {
+          "title": "AdSpy",
+          "description": "世界上最大的facebook ads 和 instagram ads SPY服务商",
+          "url": "https://adspy.com",
+          "advantages": [
+            "Facebook和Instagram广告数据最全",
+            "支持多种筛选条件",
+            "提供广告互动数据",
+            "可查看历史广告投放",
+            "支持广告素材下载",
+            "数据更新及时"
+          ],
+          "related": [
+            {
+              "title": "PowerAdSpy",
+              "description": "性价比高的社交媒体广告spy工具"
+            },
+            {
+              "title": "BigSpy",
+              "description": "国产优质SPY服务商"
+            }
+          ]
+        },
+        {
+          "title": "SpyOver",
+          "description": "原生广告(Native Ads)监控和分析服务商",
+          "url": "https://spyover.com",
+          "advantages": [
+            "专注于原生广告数据",
+            "覆盖全球主要广告网络",
+            "提供详细的投放策略分析",
+            "支持广告创意下载",
+            "数据更新实时",
+            "价格合理"
+          ],
+          "related": [
+            {
+              "title": "Anstrex",
+              "description": "专注于Push和Native广告的SPY"
+            },
+            {
+              "title": "AdVault",
+              "description": "最好的原生广告SPY服务商之一"
+            }
+          ]
+        },
+        {
+          "title": "FindNiche",
+          "description": "BigSpy马甲之一，侧重于Aliexpress 和Shopify",
+          "url": "https://findniche.com"
+        },
+        {
+          "title": "MixRank",
+          "description": "曾经的明星站点, 现在流量下滑的厉害",
+          "url": "https://mixrank.com"
+        },
+        {
+          "title": "WhatRunsWhere",
+          "description": "曾经的霸主之一",
+          "url": "https://whatrunswhere.com"
+        },
+        {
+          "title": "BigSpy",
+          "description": "国产优质SPY服务商，推荐",
+          "url": "https://bigspy.com"
+        },
+        {
+          "title": "SpyPush",
+          "description": "专注于Push广告",
+          "url": "https://spypush.com"
+        }
+      ]
+    },
+    {
+      "name": "流量平台",
+      "href": "#流量平台",
+      "icon": "mdi:traffic-light",
+      "type": "tabs",
+      "submenu": [
+        {
+          "name": "PoP流量",
+          "href": "#流量平台-pop",
+          "icon": "mdi:popup",
+          "sites": [
+            {
+              "title": "PropellerAds",
+              "description": "很多人都在用的平台",
+              "url": "https://propellerads.com",
+              "advantages": [
+                "全球流量覆盖广",
+                "支持多种广告形式",
+                "最低充值门槛低",
+                "报表系统完善",
+                "targeting功能强大",
+                "支持自动优化"
+              ],
+              "related": [
+                {
+                  "title": "Adcash",
+                  "description": "大佬们都在用的流量源之一"
+                },
+                {
+                  "title": "Popads",
+                  "description": "老牌Pop联盟之一"
+                }
+              ]
+            },
+            {
+              "title": "Adcash",
+              "description": "大佬们都在用的流量源之一",
+              "url": "https://adcash.com",
+              "advantages": [
+                "流量质量稳定",
+                "支持多种支付方式",
+                "后台操作简单",
+                "客服响应快",
+                "优化工具齐全",
+                "反作弊系统强大"
+              ],
+              "related": [
+                {
+                  "title": "PropellerAds",
+                  "description": "很多人都在用的平台"
+                },
+                {
+                  "title": "Popcash",
+                  "description": "历史悠久的pop联盟"
+                }
+              ]
+            },
+            {
+              "title": "Popads",
+              "description": "老牌Pop联盟之一",
+              "url": "https://popads.net",
+              "advantages": [
+                "老牌稳定的Pop流量",
+                "全球流量覆盖广",
+                "价格相对便宜",
+                "支持多种定向方式",
+                "后台操作简单",
+                "实时报表系统"
+              ],
+              "related": [
+                {
+                  "title": "PropellerAds",
+                  "description": "很多人都在用的平台"
+                },
+                {
+                  "title": "Popcash",
+                  "description": "历史悠久的pop联盟"
+                }
+              ]
+            },
+            {
+              "title": "Popcash",
+              "description": "历史悠久的pop联盟，popads的竞争对手",
+              "url": "https://popcash.net",
+              "advantages": [
+                "流量质量稳定",
+                "价格比较实惠",
+                "支持多种定向",
+                "报表系统完善",
+                "充值门槛低",
+                "客服响应快"
+              ],
+              "related": [
+                {
+                  "title": "Popads",
+                  "description": "老牌Pop联盟之一"
+                },
+                {
+                  "title": "PropellerAds",
+                  "description": "很多人都在用的平台"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "原生广告流量",
+          "href": "#流量平台-native",
+          "icon": "mdi:newspaper",
+          "sites": [
+            {
+              "title": "MGID",
+              "description": "全球最大的原生广告平台之一",
+              "url": "https://mgid.com"
+            },
+            {
+              "title": "Taboola",
+              "description": "全球最大的内容推荐平台",
+              "url": "https://taboola.com"
+            },
+            {
+              "title": "Outbrain",
+              "description": "高质量的内容营销平台",
+              "url": "https://outbrain.com"
+            }
+          ]
+        },
+        {
+          "name": "Push流量",
+          "href": "#流量平台-push",
+          "icon": "mdi:bell",
+          "sites": [
+            {
+              "title": "RichPush",
+              "description": "专注于Push通知广告的平台",
+              "url": "https://richpush.co"
+            },
+            {
+              "title": "Pushground",
+              "description": "高质量的Push流量平台",
+              "url": "https://pushground.com"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "综合性联盟",
+      "href": "#综合性联盟",
+      "icon": "mdi:handshake",
+      "type": "single",
+      "sites": [
+        {
+          "title": "Rakuten Advertising",
+          "description": "各种牛逼广告主聚集的地方",
+          "url": "https://rakutenadvertising.com",
+          "advantages": [
+            "广告主质量高",
+            "佣金结算准时",
+            "后台功能强大",
+            "报表系统完善",
+            "支持多种追踪方式",
+            "客服支持专业"
+          ],
+          "related": [
+            {
+              "title": "CJ Affiliate",
+              "description": "世界最大的营销联盟"
+            },
+            {
+              "title": "Impact",
+              "description": "发展极快, 广告主质量高"
+            }
+          ]
+        },
+        {
+          "title": "CJ Affiliate",
+          "description": "大名鼎鼎的CJ, 世界最大的营销联盟",
+          "url": "https://cj.com",
+          "advantages": [
+            "全球最大的联盟平台",
+            "广告主资源丰富",
+            "结算周期灵活",
+            "报表功能强大",
+            "API接口完善",
+            "品牌知名度高"
+          ],
+          "related": [
+            {
+              "title": "Rakuten Advertising",
+              "description": "各种牛逼广告主聚集的地方"
+            },
+            {
+              "title": "Shareasale",
+              "description": "美国小型广告主聚集的公司"
+            }
+          ]
+        },
+        {
+          "title": "Shareasale",
+          "description": "美国小型广告主聚集的公司，值得加入",
+          "url": "https://shareasale.com",
+          "advantages": [
+            "小型广告主资源丰富",
+            "加入门槛较低",
+            "佣金结算及时",
+            "后台操作简单",
+            "客服响应快",
+            "适合新手入门"
+          ],
+          "related": [
+            {
+              "title": "CJ Affiliate",
+              "description": "世界最大的营销联盟"
+            },
+            {
+              "title": "FlexOffers",
+              "description": "12,000+广告主"
+            }
+          ]
+        },
+        {
+          "title": "Impact",
+          "description": "发展极快, 广告主质量高",
+          "url": "https://impact.com",
+          "advantages": [
+            "平台发展迅速",
+            "广告主质量优质",
+            "技术支持完善",
+            "追踪系统稳定",
+            "报表功能强大",
+            "合作伙伴资源丰富"
+          ],
+          "related": [
+            {
+              "title": "Rakuten Advertising",
+              "description": "各种牛逼广告主聚集的地方"
+            },
+            {
+              "title": "CJ Affiliate",
+              "description": "世界最大的营销联盟"
+            }
+          ]
+        },
+        {
+          "title": "FlexOffers",
+          "description": "12,000+广告主",
+          "url": "https://flexoffers.com",
+          "advantages": [
+            "广告主数量多",
+            "产品类型丰富",
+            "佣金比例高",
+            "支付方式灵活",
+            "后台功能完善",
+            "加入门槛适中"
+          ],
+          "related": [
+            {
+              "title": "Shareasale",
+              "description": "美国小型广告主聚集的公司"
+            },
+            {
+              "title": "CJ Affiliate",
+              "description": "世界最大的营销联盟"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+} 

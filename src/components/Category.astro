@@ -1,0 +1,82 @@
+---
+import styles from '../styles/components/category.module.css';
+import type { MenuItem } from '../types/config';
+import NavCard from './NavCard.astro';
+import TabPanel from './TabPanel.astro';
+import IconComponent from './IconComponent.astro';
+
+export interface Props {
+  item: MenuItem;
+  index: number;
+}
+
+const { item, index } = Astro.props;
+---
+
+<section 
+  id={item.href.slice(1)} 
+  class={styles.category}
+  data-category-index={index}
+>
+  <div class={styles.header}>
+    <div class="flex items-center gap-2">
+      {item.icon && (
+        <IconComponent 
+          icon={item.icon} 
+          class="w-6 h-6 text-gray-600" 
+        />
+      )}
+      <h2 class={styles.title}>{item.name}</h2>
+    </div>
+  </div>
+  
+  {item.type === 'single' && item.sites && (
+    <div class={styles.grid}>
+      {item.sites.map(site => (
+        <NavCard {...site} />
+      ))}
+    </div>
+  )}
+
+  {item.type === 'tabs' && item.submenu && (
+    <TabPanel tabs={item.submenu} />
+  )}
+</section>
+
+<script>
+  const initCategoryScroll = () => {
+    const links = document.querySelectorAll<HTMLAnchorElement>('[data-type="sub"]');
+    
+    const scrollToCategory = (parentId: string) => {
+      const section = document.getElementById(parentId);
+      if (!section) return;
+
+      // 获取目标区域的位置
+      const rect = section.getBoundingClientRect();
+      const headerOffset = 64; // 头部高度
+      
+      // 计算滚动位置，使目标区域位于视口顶部
+      const scrollY = window.scrollY + rect.top - headerOffset;
+
+      // 平滑滚动
+      window.scrollTo({
+        top: scrollY,
+        behavior: 'smooth'
+      });
+    };
+    
+    links.forEach(link => {
+      link.addEventListener('click', (e: Event) => {
+        e.preventDefault();
+        const sectionId = link.getAttribute('data-section');
+        const parentId = link.getAttribute('data-parent-section');
+        
+        if (sectionId && parentId) {
+          scrollToCategory(parentId);
+        }
+      });
+    });
+  };
+
+  document.addEventListener('DOMContentLoaded', initCategoryScroll);
+</script> 

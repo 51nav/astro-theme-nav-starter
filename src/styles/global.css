@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --header-height: 64px;
+  --sidebar-width: 256px;
+  --sidebar-collapsed-width: 0px;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-gray-50;
+}
+
+.menu-collapsed {
+  --sidebar-width: 0px;
+}
+
+aside {
+  transition: width 0.3s ease;
+}
+
+aside.collapsed {
+  width: var(--sidebar-collapsed-width);
+}
+
+main {
+  transition: margin-left 0.3s ease;
+}
+
+main.expanded {
+  margin-left: var(--sidebar-collapsed-width);
+} 

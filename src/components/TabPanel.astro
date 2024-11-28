@@ -1,0 +1,91 @@
+---
+import styles from '../styles/components/tabpanel.module.css';
+import type { SubMenuItem } from '../types/config';
+import NavCard from './NavCard.astro';
+
+interface Props {
+  tabs: SubMenuItem[];
+}
+
+const { tabs } = Astro.props;
+---
+
+<div class={styles.container}>
+  <div class={styles.nav}>
+    <nav class={styles.navList} aria-label="Tabs">
+      {tabs.map((tab, index) => (
+        <button
+          class={styles.button}
+          data-index={index}
+          data-section={tab.href.slice(1)}
+          aria-selected={index === 0}
+          data-tab-trigger
+        >
+          {tab.name}
+        </button>
+      ))}
+    </nav>
+  </div>
+
+  <div class={styles.panels}>
+    {tabs.map((tab, index) => (
+      <div
+        id={tab.href.slice(1)}
+        class={styles.panel}
+        data-index={index}
+        data-active={index === 0}
+        data-tab-panel
+      >
+        {tab.sites.map(site => (
+          <NavCard {...site} />
+        ))}
+      </div>
+    ))}
+  </div>
+</div>
+
+<script>
+  function initTabs(): void {
+    const tabButtons = document.querySelectorAll<HTMLButtonElement>('[data-tab-trigger]');
+    const tabPanels = document.querySelectorAll<HTMLDivElement>('[data-tab-panel]');
+    const sidebarLinks = document.querySelectorAll<HTMLAnchorElement>('[data-type="sub"]');
+
+    // 切换标签页
+    function switchTab(index: number): void {
+      tabButtons.forEach((button, i) => {
+        button.setAttribute('aria-selected', (i === index).toString());
+      });
+      tabPanels.forEach((panel, i) => {
+        panel.setAttribute('data-active', (i === index).toString());
+      });
+    }
+
+    // 标签按钮点击事件
+    tabButtons.forEach((button, index) => {
+      button.addEventListener('click', () => {
+        switchTab(index);
+      });
+    });
+
+    // 侧边栏链接点击事件
+    sidebarLinks.forEach((link) => {
+      link.addEventListener('click', (e: Event) => {
+        e.preventDefault();
+        const tabIndex = Number(link.getAttribute('data-tab-index') || '0');
+        switchTab(tabIndex);
+      });
+    });
+
+    // 从 URL 获取初始标签
+    const hash = window.location.hash;
+    if (hash) {
+      const targetLink = document.querySelector<HTMLAnchorElement>(`[href="${hash}"]`);
+      if (targetLink) {
+        const tabIndex = Number(targetLink.getAttribute('data-tab-index') || '0');
+        switchTab(tabIndex);
+      }
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', initTabs);
+</script> 

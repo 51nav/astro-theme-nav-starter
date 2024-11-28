@@ -1,0 +1,301 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import type { Config, StaticPath, Site } from '../../types/config';
+import configData from '../../data/config.json';
+import Giscus from '../../components/Giscus.astro';
+
+export async function getStaticPaths() {
+  const config = configData as Config;
+  const paths: StaticPath[] = [];
+
+  // 遍历所有菜单项收集网站
+  config.menuItems.forEach(item => {
+    if (item.type === 'single' && item.sites) {
+      item.sites.forEach(site => {
+        paths.push({
+          params: { slug: site.title.toLowerCase() },
+          props: { site, category: item.name }
+        });
+      });
+    }
+    if (item.type === 'tabs' && item.submenu) {
+      item.submenu.forEach(subItem => {
+        subItem.sites.forEach(site => {
+          paths.push({
+            params: { slug: site.title.toLowerCase() },
+            props: { site, category: item.name, subcategory: subItem.name }
+          });
+        });
+      });
+    }
+  });
+
+  return paths;
+}
+
+interface Props {
+  site: Site;
+  category: string;
+  subcategory?: string;
+}
+
+const { site, category, subcategory } = Astro.props;
+const { title, description, url } = site;
+
+// 从 URL 生成 logo URL
+const getFaviconUrl = (siteUrl: string): string => {
+  if (!siteUrl) return '';
+
+  try {
+    const domain = new URL(siteUrl).hostname;
+    if (!domain) return '';
+    
+    // 直接返回 Google API 作为初始值
+    return `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
+  } catch {
+    return '';
+  }
+};
+
+const logoUrl = getFaviconUrl(url);
+---
+
+<Layout title={`${title} - Affiliate导航`} description={description}>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="bg-white rounded-lg shadow-sm p-6">
+      {/* 面包屑导航 */}
+      <nav class="mb-4 text-sm text-gray-500">
+        <a href="/" class="hover:text-blue-600">首页</a>
+        <span class="mx-2">/</span>
+        <a href={`/#${category}`} class="hover:text-blue-600">{category}</a>
+        {subcategory && (
+          <>
+            <span class="mx-2">/</span>
+            <span class="text-gray-900">{subcategory}</span>
+          </>
+        )}
+      </nav>
+
+      {/* 网站信息 */}
+      <div class="flex items-start gap-6">
+        <div class="bg-white rounded-lg">
+          <img 
+            src={logoUrl} 
+            alt={title} 
+            width="64" 
+            height="64" 
+            class="rounded-lg object-contain"
+            loading="eager"
+            decoding="sync"
+            data-domain={new URL(url).hostname}
+            onerror="const domain = this.getAttribute('data-domain'); if (domain) { const sources = ['https://' + domain + '/favicon.ico', 'https://api.iowen.cn/favicon/' + domain + '.png', 'https://icon.horse/icon/' + domain, 'https://favicons.githubusercontent.com/' + domain]; let index = 0; const tryNextSource = () => { if (index < sources.length) { this.src = sources[index++]; } else { this.style.display = 'none'; } }; this.onerror = tryNextSource; tryNextSource(); } else { this.style.display = 'none'; }"
+          />
+        </div>
+        <div class="flex-1">
+          <h1 class="text-2xl font-bold text-gray-900 mb-2">{title}</h1>
+          <p class="text-gray-500 mb-4">{description}</p>
+          <div class="flex items-center gap-4">
+            <a 
+              href={url} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700"
+            >
+              <span>访问网站</span>
+              <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
+                <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
+              </svg>
+            </a>
+            <button
+              type="button"
+              class="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700"
+              onclick="showQRCode(event)"
+              data-url={url}
+            >
+              <span>手机查看</span>
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M3 11h8V3H3v8zm2-6h4v4H5V5zM3 21h8v-8H3v8zm2-6h4v4H5v-4zM13 3v8h8V3h-8zm6 6h-4V5h4v4zM13 13h2v2h-2v-2zm0 4h2v2h-2v-2zm4 0h2v2h-2v-2zm0-4h2v2h-2v-2z"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* QR码弹窗 */}
+      <div id="qrModal" class="fixed inset-0 bg-black/10 hidden items-center justify-center">
+        <div class="bg-white rounded-lg p-6 max-w-sm w-full mx-4 shadow-xl">
+          <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-semibold text-gray-900">扫描二维码访问</h3>
+            <button 
+              type="button" 
+              class="text-gray-400 hover:text-gray-500"
+              onclick="closeQRCode()"
+            >
+              <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+              </svg>
+            </button>
+          </div>
+          <div id="qrcode" class="flex justify-center bg-white p-4 rounded-lg">
+            <!-- QR码将在这里生成 -->
+          </div>
+          <p class="text-sm text-gray-500 text-center mt-4">{title}</p>
+        </div>
+      </div>
+
+      {/* 优势列表 */}
+      <div class="mt-8">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">优势:</h2>
+        <ul class="space-y-2 text-gray-600">
+          {site.advantages?.map(advantage => (
+            <li class="flex items-start gap-2">
+              <svg class="w-5 h-5 text-green-500 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+              </svg>
+              <span>{advantage}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* 相关推荐 */}
+      <div class="mt-8">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">相关导航</h2>
+        <div class="grid sm:grid-cols-2 gap-4">
+          {site.related?.map(item => (
+            <a 
+              href={`/sites/${item.title.toLowerCase()}`}
+              class="block p-4 border border-gray-200 rounded-lg hover:border-blue-500 hover:shadow-sm transition-all"
+            >
+              <div class="font-medium text-gray-900">{item.title}</div>
+              <div class="text-sm text-gray-500 mt-1">{item.description}</div>
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <!-- 添加评论区 -->
+      <div class="mt-8">
+        <Giscus
+          repo="你的用户名/仓库名"
+          repoId="你的仓库ID"
+          category="Announcements"
+          categoryId="你的分类ID"
+          mapping="pathname"
+          theme="light"
+        />
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  import QRCode from 'qrcode';
+
+  declare global {
+    interface Window {
+      showQRCode: (event: MouseEvent) => void;
+      closeQRCode: () => void;
+    }
+  }
+
+  window.showQRCode = async (event: MouseEvent) => {
+    const button = event.currentTarget as HTMLButtonElement;
+    const url = button.dataset.url;
+    if (!url) return;
+
+    const modal = document.getElementById('qrModal');
+    const qrContainer = document.getElementById('qrcode');
+    if (!modal || !qrContainer) return;
+
+    try {
+      const canvas = document.createElement('canvas');
+      await QRCode.toCanvas(canvas, url, {
+        width: 256,
+        margin: 2,
+        color: {
+          dark: '#000000',
+          light: '#ffffff'
+        },
+        errorCorrectionLevel: 'H' as const
+      });
+
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        // 尝试加载网站 favicon
+        const domain = new URL(url).hostname;
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.src = `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
+        
+        const siteTitle = button.closest('.flex-1')?.querySelector('h1')?.textContent || '';
+        
+        img.onload = () => {
+          // Logo 大小为二维码的 20%
+          const logoSize = canvas.width * 0.2;
+          const logoX = (canvas.width - logoSize) / 2;
+          const logoY = (canvas.height - logoSize) / 2;
+          
+          // 绘制白色背景
+          ctx.fillStyle = 'white';
+          ctx.fillRect(logoX - 2, logoY - 2, logoSize + 4, logoSize + 4);
+          // 绘制 logo
+          ctx.drawImage(img, logoX, logoY, logoSize, logoSize);
+          
+          // 显示二维码
+          qrContainer.innerHTML = '';
+          qrContainer.appendChild(canvas);
+          modal.style.display = 'flex';
+        };
+        
+        img.onerror = () => {
+          // 如果 logo 加载失败，使用网站名称首字母
+          const logoSize = canvas.width * 0.2;
+          const logoX = (canvas.width - logoSize) / 2;
+          const logoY = (canvas.height - logoSize) / 2;
+          
+          // 绘制蓝色背景
+          ctx.fillStyle = '#2937f0';
+          ctx.fillRect(logoX, logoY, logoSize, logoSize);
+          
+          // 绘制白色字母
+          ctx.fillStyle = 'white';
+          ctx.font = `bold ${logoSize * 0.6}px Arial`;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(
+            siteTitle.charAt(0).toUpperCase(),
+            canvas.width * 0.5,
+            canvas.height * 0.5
+          );
+          
+          // 显示二维码
+          qrContainer.innerHTML = '';
+          qrContainer.appendChild(canvas);
+          modal.style.display = 'flex';
+        };
+      }
+    } catch (err) {
+      console.error('Failed to generate QR code:', err);
+    }
+  };
+
+  window.closeQRCode = () => {
+    const modal = document.getElementById('qrModal');
+    if (modal) modal.style.display = 'none';
+  };
+
+  const modal = document.getElementById('qrModal');
+  modal?.addEventListener('click', (e: MouseEvent) => {
+    if (e.target === e.currentTarget) {
+      window.closeQRCode();
+    }
+  });
+</script>
+
+<style>
+  #qrModal {
+    z-index: 50;
+  }
+</style> 

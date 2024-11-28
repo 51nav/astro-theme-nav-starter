@@ -1,0 +1,85 @@
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--header-height);
+  background-color: white;
+  border-bottom: 1px solid theme('colors.gray.200');
+  z-index: theme('zIndex.50');
+}
+
+.container {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: theme('spacing.8');
+  padding-right: theme('spacing.8');
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.logo {
+  font-size: theme('fontSize.xl');
+  font-weight: theme('fontWeight.bold');
+  color: theme('colors.gray.900');
+  text-decoration: none;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.navLink {
+  font-size: 0.875rem;
+  color: #666;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.navLink:hover {
+  color: #2937f0;
+}
+
+.description {
+  font-size: theme('fontSize.sm');
+  color: theme('colors.gray.500');
+}
+
+.menuBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: none;
+  background: none;
+  color: #666;
+  cursor: pointer;
+  transition: color 0.2s;
+  padding: 0;
+  margin-right: -0.5rem;
+}
+
+.menuBtn:hover {
+  color: #2937f0;
+}
+
+.menuIcon {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.logoWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+ 

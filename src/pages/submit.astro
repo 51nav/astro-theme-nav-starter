@@ -1,0 +1,148 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Giscus from '../components/Giscus.astro';
+---
+
+<Layout title="收录提交 - Affiliate导航" description="提交网站收录申请">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="bg-white rounded-lg shadow-sm p-6">
+      <h1 class="text-2xl font-bold text-gray-900 mb-6">提交网站收录</h1>
+      
+      <form id="submitForm" class="space-y-6">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            网站名称 *
+          </label>
+          <input 
+            type="text" 
+            name="title" 
+            required
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            网站链接 *
+          </label>
+          <input 
+            type="url" 
+            name="url" 
+            required
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            网站描述 *
+          </label>
+          <textarea 
+            name="description" 
+            required
+            rows="3"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+          ></textarea>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            网站优势（每行一个）
+          </label>
+          <textarea 
+            name="advantages" 
+            rows="5"
+            placeholder="例如：&#10;跳转速度快&#10;价格合理&#10;功能完善"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+          ></textarea>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            分类 *
+          </label>
+          <select 
+            name="category" 
+            required
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+          >
+            <option value="">请选择分类</option>
+            <option value="追踪系统">追踪系统</option>
+            <option value="SPY服务">SPY服务</option>
+            <option value="流量平台">流量平台</option>
+            <option value="综合性联盟">综合性联盟</option>
+          </select>
+        </div>
+
+        <button
+          type="submit"
+          class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        >
+          提交收录
+        </button>
+      </form>
+
+      <!-- 在表单下方添加 Giscus 评论区来收集提交 -->
+      <div class="mt-8 pt-8 border-t">
+        <p class="text-sm text-gray-500 mb-4">
+          请在下方评论区提交您的网站信息，我们会尽快审核。
+        </p>
+        <Giscus
+          repo="你的用户名/仓库名"
+          repoId="你的仓库ID"
+          category="收录提交"
+          categoryId="你的分类ID"
+          mapping="pathname"
+          theme="light"
+        />
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  const form = document.getElementById('submitForm');
+  
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    
+    const formData = new FormData(e.target as HTMLFormElement);
+    const data = {
+      title: formData.get('title'),
+      url: formData.get('url'),
+      description: formData.get('description'),
+      advantages: formData.get('advantages')?.toString().split('\n').filter(Boolean),
+      category: formData.get('category')
+    };
+    
+    // 格式化提交内容
+    const content = `
+### 网站提交
+
+- **名称**：${data.title}
+- **链接**：${data.url}
+- **描述**：${data.description}
+- **分类**：${data.category}
+
+#### 优势特点：
+${data.advantages?.map(adv => `- ${adv}`).join('\n')}
+
+---
+请审核，谢谢！
+    `.trim();
+
+    // 找到 giscus iframe
+    const iframe = document.querySelector<HTMLIFrameElement>('iframe.giscus-frame');
+    if (!iframe?.contentWindow) return;
+
+    // 将格式化的内容发送到评论框
+    iframe.contentWindow.postMessage({ 
+      giscus: { 
+        setComment: content
+      } 
+    }, 'https://giscus.app');
+
+    // 清空表单
+    (e.target as HTMLFormElement).reset();
+  });
+</script> 

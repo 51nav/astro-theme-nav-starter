@@ -1,0 +1,100 @@
+---
+import styles from '../styles/components/navcard.module.css';
+import type { Site } from '../types/config';
+
+interface Props extends Site {}
+
+const { title, description, url } = Astro.props;
+
+// 从 URL 生成 logo URL
+const getFaviconUrl = (siteUrl: string): string => {
+  try {
+    const domain = new URL(siteUrl).hostname;
+    return `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
+  } catch {
+    return '';
+  }
+};
+
+const logoUrl = getFaviconUrl(url);
+---
+
+<div class={styles.card}>
+  <img 
+    src={logoUrl} 
+    alt={title} 
+    width="32"
+    height="32"
+    class={styles.logo}
+    loading="eager"
+    decoding="sync"
+    onerror={`this.onerror=null; this.src='https://${new URL(url).hostname}/favicon.ico'`}
+  />
+  <a href={`/sites/${title.toLowerCase()}`} class={styles.link}>
+    <div class={styles.content}>
+      <h3 class={styles.title}>{title}</h3>
+      <p class={styles.description}>{description}</p>
+    </div>
+  </a>
+  <a 
+    href={url}
+    target="_blank"
+    rel="noopener noreferrer"
+    class={styles.directLink}
+    title="直达"
+  >
+    <svg class={styles.directIcon} viewBox="0 0 24 24">
+      <path fill="currentColor" d="M5 3v18h18v-2H7V3H5m15 0v8h-2V6.41l-7.29 7.3-1.42-1.42L16.59 5H13V3h7Z"/>
+    </svg>
+  </a>
+</div>
+
+<script define:vars={{ styles }}>
+  // 渲染 logo 到 canvas
+  function renderLogo(canvas, url, siteTitle) {
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    
+    try {
+      const domain = new URL(url).hostname;
+      img.src = `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
+      
+      img.onload = () => {
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      };
+      
+      img.onerror = () => {
+        // 如果图片加载失败，绘制首字母
+        ctx.fillStyle = '#2937f0';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        ctx.fillStyle = 'white';
+        ctx.font = 'bold 16px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(
+          siteTitle.charAt(0).toUpperCase(),
+          canvas.width / 2,
+          canvas.height / 2
+        );
+      };
+    } catch (error) {
+      console.error('Error loading favicon:', error);
+    }
+  }
+
+  // 渲染所有 logo
+  document.querySelectorAll('canvas[id^="logo-"]').forEach((canvas) => {
+    const card = canvas.closest(`.${styles.card}`);
+    if (card) {
+      const url = card.querySelector(`.${styles.urlText}`)?.textContent;
+      const title = card.querySelector(`.${styles.title}`)?.textContent;
+      if (url && title) {
+        renderLogo(canvas, url, title);
+      }
+    }
+  });
+</script> 

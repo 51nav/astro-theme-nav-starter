@@ -1,0 +1,46 @@
+---
+import styles from '../styles/components/header.module.css';
+import type { Config } from '../types/config';
+import configData from '../data/config.json';
+
+const config = configData as Config;
+---
+
+<header class={styles.header}>
+  <div class={styles.container}>
+    <div class={styles.left}>
+      <div class={styles.logoWrapper}>
+        <a href={config.site.logo.href} class={styles.logo}>
+          {config.site.logo.text}
+        </a>
+        <div class={styles.description}>{config.site.description}</div>
+      </div>
+      <nav class={styles.nav}>
+        <button 
+          type="button" 
+          class={styles.menuBtn}
+          id="menuToggle"
+          aria-label="Toggle menu"
+        >
+          <svg viewBox="0 0 24 24" class={styles.menuIcon}>
+            <path fill="currentColor" d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+          </svg>
+        </button>
+        <a href="/" class={styles.navLink}>首页</a>
+        <a href="/submit" class={styles.navLink}>收录提交</a>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<script>
+  const menuBtn = document.getElementById('menuToggle');
+  const sidebar = document.querySelector('aside');
+  const main = document.querySelector('main');
+  
+  menuBtn?.addEventListener('click', () => {
+    sidebar?.classList.toggle('collapsed');
+    main?.classList.toggle('expanded');
+    document.documentElement.classList.toggle('menu-collapsed');
+  });
+</script> 
