@@ -14,8 +14,9 @@ export const getStaticPaths = (async () => {
   config.menuItems.forEach(item => {
     if (item.type === 'single' && item.sites) {
       item.sites.forEach(site => {
+        const slug = site.title.toLowerCase().replace(/\s+/g, '-');
         paths.push({
-          params: { slug: encodeURIComponent(site.title.toLowerCase()) },
+          params: { slug },
           props: { site, category: item.name }
         });
       });
@@ -23,8 +24,9 @@ export const getStaticPaths = (async () => {
     if (item.type === 'tabs' && item.submenu) {
       item.submenu.forEach(subItem => {
         subItem.sites.forEach(site => {
+          const slug = site.title.toLowerCase().replace(/\s+/g, '-');
           paths.push({
-            params: { slug: encodeURIComponent(site.title.toLowerCase()) },
+            params: { slug },
             props: { site, category: item.name, subcategory: subItem.name }
           });
         });
@@ -150,7 +152,7 @@ const logoUrl = getFaviconUrl(url);
         <div class="grid sm:grid-cols-2 gap-4">
           {site.related?.map(item => (
             <a 
-              href={`/sites/${encodeURIComponent(item.title.toLowerCase())}`}
+              href={`/sites/${item.title.toLowerCase().replace(/\s+/g, '-')}`}
               class="block p-4 border border-gray-200 rounded-lg hover:border-blue-500 hover:shadow-sm transition-all"
             >
               <div class="font-medium text-gray-900">{item.title}</div>
