@@ -10,7 +10,7 @@ const config = configData as Config;
 <Layout title="Affiliate导航" description="专业的Affiliate导航网站">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     {config.menuItems.map((item, index) => (
-      <div id={item.href}>
+      <div id={item.href.replace('#', '')}>
         <Category item={item} index={index} />
       </div>
     ))}

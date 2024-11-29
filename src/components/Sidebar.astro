@@ -14,7 +14,7 @@ const { menuItems } = configData as { menuItems: MenuItem[] };
         <li>
           {item.type === 'single' ? (
             <a
-              href={`#${item.href}`}
+              href={item.href}
               class={styles.link}
               data-section={item.href}
               data-type="main"
@@ -52,7 +52,7 @@ const { menuItems } = configData as { menuItems: MenuItem[] };
                   {item.submenu.map((subItem, subIndex) => (
                     <li>
                       <a
-                        href={`#${subItem.href}`}
+                        href={subItem.href}
                         class={styles.submenuLink}
                         data-section={subItem.href}
                         data-parent-section={item.href}
@@ -103,7 +103,8 @@ const { menuItems } = configData as { menuItems: MenuItem[] };
 
         // 如果不在首页，先返回首页
         if (!window.location.pathname.endsWith('/')) {
-          window.location.href = `/${href.replace(/^#/, '')}`;
+          // 直接跳转到首页
+          window.location.href = href;
           return;
         }
 

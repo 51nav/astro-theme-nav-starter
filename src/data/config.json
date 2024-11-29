@@ -10,7 +10,7 @@
   "menuItems": [
     {
       "name": "追踪系统",
-      "href": "#追踪系统",
+      "href": "/#tracking",
       "icon": "mdi:chart-line",
       "type": "single",
       "sites": [
@@ -138,7 +138,7 @@
     },
     {
       "name": "SPY服务",
-      "href": "#spy服务",
+      "href": "#spy",
       "icon": "mdi:eye",
       "type": "single",
       "sites": [
@@ -207,7 +207,7 @@
             },
             {
               "title": "Adplexity",
-              "description": "最全面的广告spy工具"
+              "description": "最全面的广告spy具"
             }
           ]
         },
@@ -253,7 +253,7 @@
             },
             {
               "title": "AdVault",
-              "description": "最好的原生广告SPY服务商之一"
+              "description": "最的原生广告SPY服务商之一"
             }
           ]
         },
@@ -286,13 +286,13 @@
     },
     {
       "name": "流量平台",
-      "href": "#流量平台",
+      "href": "#traffic",
       "icon": "mdi:traffic-light",
       "type": "tabs",
       "submenu": [
         {
           "name": "PoP流量",
-          "href": "#流量平台-pop",
+          "href": "#traffic-pop",
           "icon": "mdi:popup",
           "sites": [
             {
@@ -391,7 +391,7 @@
         },
         {
           "name": "原生广告流量",
-          "href": "#流量平台-native",
+          "href": "#traffic-native",
           "icon": "mdi:newspaper",
           "sites": [
             {
@@ -432,7 +432,7 @@
     },
     {
       "name": "综合性联盟",
-      "href": "#综合性联盟",
+      "href": "#networks",
       "icon": "mdi:handshake",
       "type": "single",
       "sites": [
@@ -445,7 +445,7 @@
             "佣金结算准时",
             "后台功能强大",
             "报表系统完善",
-            "支持多种追踪方式",
+            "支持多种追踪方",
             "客服支持专业"
           ],
           "related": [
@@ -474,7 +474,7 @@
           "related": [
             {
               "title": "Rakuten Advertising",
-              "description": "各种牛逼��告主聚集的地方"
+              "description": "各种牛逼广告主聚集的地方"
             },
             {
               "title": "Shareasale",
@@ -513,7 +513,7 @@
             "平台发展迅速",
             "广告主质量优质",
             "技术支持完善",
-            "追踪系统稳定",
+            "追踪统稳定",
             "报表功能强大",
             "合作伙伴资源丰富"
           ],
