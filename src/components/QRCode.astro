@@ -1,10 +1,10 @@
 ---
 interface Props {
-  title: string;
   url: string;
+  title: string;
 }
 
-const { title, url } = Astro.props;
+const { url, title } = Astro.props;
 ---
 
 <div class="qr-modal" id="qrModal">
@@ -65,6 +65,31 @@ const { title, url } = Astro.props;
               light: '#ffffff'
             }
           });
+
+          // 添加 logo
+          const ctx = canvas.getContext('2d');
+          const size = 200;
+          const centerSize = size * 0.25; // logo 大小为二维码的 25%
+          const centerPos = (size - centerSize) / 2;
+          
+          // 绘制白色背景
+          ctx.fillStyle = '#FFFFFF';
+          ctx.beginPath();
+          ctx.roundRect(centerPos - 4, centerPos - 4, centerSize + 8, centerSize + 8, 8);
+          ctx.fill();
+
+          // 创建并绘制 logo
+          const logo = new Image();
+          logo.onload = () => {
+            ctx.save();
+            ctx.beginPath();
+            ctx.roundRect(centerPos, centerPos, centerSize, centerSize, 6);
+            ctx.clip();
+            ctx.drawImage(logo, centerPos, centerPos, centerSize, centerSize);
+            ctx.restore();
+          };
+          logo.src = 'https://www.google.com/s2/favicons?domain=' + new URL(siteUrl).hostname + '&sz=128';
+
           qrContainer.appendChild(canvas);
           modal.style.display = 'flex';
         } catch (error) {
@@ -93,13 +118,13 @@ const { title, url } = Astro.props;
 
 <style>
   .qr-modal {
+    display: none;
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.5);
-    display: none;
     justify-content: center;
     align-items: center;
     z-index: 1000;
@@ -108,21 +133,21 @@ const { title, url } = Astro.props;
   .qr-content {
     background: white;
     padding: 2rem;
-    border-radius: 12px;
-    width: 90%;
-    max-width: 320px;
-    text-align: center;
+    border-radius: 0.5rem;
+    max-width: 90%;
+    width: 300px;
   }
 
   .qr-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
   }
 
   .qr-header h3 {
     margin: 0;
+    font-size: 1.2rem;
     color: #333;
   }
 
@@ -130,33 +155,28 @@ const { title, url } = Astro.props;
     background: none;
     border: none;
     font-size: 1.5rem;
-    color: #666;
     cursor: pointer;
-    padding: 0.5rem;
+    padding: 0;
+    color: #666;
   }
 
   .close-button:hover {
-    color: #333;
+    color: #000;
   }
 
   .qr-code {
-    margin: 1rem auto;
-    padding: 1rem;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: center;
+    margin: 1rem 0;
   }
 
   .qr-info {
-    margin-top: 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
+    text-align: center;
   }
 
   .qr-title {
     margin: 0;
     color: #666;
+    font-size: 0.9rem;
   }
 </style> 
