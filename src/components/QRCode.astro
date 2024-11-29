@@ -22,8 +22,7 @@ const { url, title } = Astro.props;
 
 <script>
   // 动态导入 QRCode
-  const QRCodeModule = await import('qrcode');
-  const QRCode = QRCodeModule.default;
+  import QRCode from 'qrcode';
 
   document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById('qrModal');
@@ -57,6 +56,12 @@ const { url, title } = Astro.props;
 
         try {
           const canvas = document.createElement('canvas');
+          // 添加加载提示
+          const loadingMsg = document.createElement('div');
+          loadingMsg.textContent = '正在生成二维码...';
+          loadingMsg.style.color = '#666';
+          qrContainer.appendChild(loadingMsg);
+
           await QRCode.toCanvas(canvas, siteUrl, {
             width: 200,
             margin: 2,
@@ -65,6 +70,9 @@ const { url, title } = Astro.props;
               light: '#ffffff'
             }
           });
+
+          // 移除加载提示
+          qrContainer.removeChild(loadingMsg);
 
           // 添加 logo
           const ctx = canvas.getContext('2d');
