@@ -60,12 +60,13 @@ const getFaviconUrl = (siteUrl: string): string => {
 };
 
 const logoUrl = getFaviconUrl(url);
+
 ---
 
 <Layout title={`${title} - Affiliate导航`} description={description}>
   <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <div class="bg-white rounded-lg shadow-sm p-6">
-      {/* 面包屑导航 */}
+      <!-- 面包屑导航 -->
       <nav class="mb-4 text-sm text-gray-500">
         <a href="/" class="hover:text-blue-600">首页</a>
         <span class="mx-2">/</span>
@@ -78,7 +79,7 @@ const logoUrl = getFaviconUrl(url);
         )}
       </nav>
 
-      {/* 网站信息 */}
+      <!-- 网站信息 -->
       <div class="flex items-start gap-6">
         <div class="bg-white rounded-lg">
           <img 
@@ -124,9 +125,11 @@ const logoUrl = getFaviconUrl(url);
         </div>
       </div>
 
-      <QRCode url={url} title={title} />
+      <div id="qrCodeDisplay" class="hidden mt-4">
+        <QRCode url={url} title={title} />
+      </div>
 
-      {/* 优势列表 */}
+      <!-- 优势列表 -->
       <div class="mt-8">
         <h2 class="text-lg font-semibold text-gray-900 mb-4">优势:</h2>
         <ul class="space-y-2 text-gray-600">
@@ -141,7 +144,7 @@ const logoUrl = getFaviconUrl(url);
         </ul>
       </div>
 
-      {/* 相关推荐 */}
+      <!-- 相关推荐 -->
       <div class="mt-8">
         <h2 class="text-lg font-semibold text-gray-900 mb-4">相关导航</h2>
         <div class="grid sm:grid-cols-2 gap-4">
@@ -171,4 +174,17 @@ const logoUrl = getFaviconUrl(url);
     </div>
   </div>
 </Layout>
---- 
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const showQRCode = document.getElementById('showQRCode');
+    const qrCodeDisplay = document.getElementById('qrCodeDisplay');
+    
+    if (showQRCode && qrCodeDisplay) {
+      showQRCode.addEventListener('click', function() {
+        qrCodeDisplay.classList.toggle('hidden');
+      });
+    }
+  });
+</script>
+----- 
