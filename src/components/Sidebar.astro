@@ -5,6 +5,11 @@ import configData from '../data/config.json';
 import IconComponent from './IconComponent.astro';
 
 const { menuItems } = configData as { menuItems: MenuItem[] };
+
+// 生成完整的 URL
+const getFullUrl = (href: string) => {
+  return window.location.origin + '/' + href.replace(/^\//, '');
+};
 ---
 
 <aside class={styles.sidebar}>
@@ -14,7 +19,7 @@ const { menuItems } = configData as { menuItems: MenuItem[] };
         <li>
           {item.type === 'single' ? (
             <a
-              href={item.href}
+              href={'/' + item.href}
               class={styles.link}
               data-section={item.href}
               data-type="main"
@@ -52,7 +57,7 @@ const { menuItems } = configData as { menuItems: MenuItem[] };
                   {item.submenu.map((subItem, subIndex) => (
                     <li>
                       <a
-                        href={subItem.href}
+                        href={'/' + subItem.href}
                         class={styles.submenuLink}
                         data-section={subItem.href}
                         data-parent-section={item.href}
@@ -76,6 +81,11 @@ const { menuItems } = configData as { menuItems: MenuItem[] };
 </aside>
 
 <script>
+  // 生成完整的 URL
+  function getFullUrl(href: string) {
+    return window.location.origin + '/' + href.replace(/^\//, '');
+  }
+
   // 初始化侧边栏
   function initSidebar() {
     const menuButtons = document.querySelectorAll('[data-submenu-trigger]');
@@ -101,18 +111,8 @@ const { menuItems } = configData as { menuItems: MenuItem[] };
         const href = link.getAttribute('href');
         if (!href) return;
 
-        // 如果不在首页，先返回首页
-        if (!window.location.pathname.endsWith('/')) {
-          // 直接跳转到首页
-          window.location.href = href;
-          return;
-        }
-
-        // 在首页时平滑滚动到目标位置
-        const target = document.querySelector(href);
-        if (target) {
-          target.scrollIntoView({ behavior: 'smooth' });
-        }
+        // 统一处理：总是跳转到首页对应的锚点
+        window.location.href = getFullUrl(href);
       });
     });
   }

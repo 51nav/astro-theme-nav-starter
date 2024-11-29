@@ -7,10 +7,16 @@
       "href": "/"
     }
   },
+  "categoryMap": {
+    "追踪系统": "tracking",
+    "SPY服务": "spy",
+    "流量平台": "traffic",
+    "综合性联盟": "networks"
+  },
   "menuItems": [
     {
       "name": "追踪系统",
-      "href": "/#tracking",
+      "href": "#tracking",
       "icon": "mdi:chart-line",
       "type": "single",
       "sites": [
@@ -413,7 +419,7 @@
         },
         {
           "name": "Push流量",
-          "href": "#流量平台-push",
+          "href": "#traffic-push",
           "icon": "mdi:bell",
           "sites": [
             {

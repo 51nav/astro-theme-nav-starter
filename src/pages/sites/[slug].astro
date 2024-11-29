@@ -46,6 +46,12 @@ interface Props {
 const { site, category, subcategory } = Astro.props;
 const { title, description, url } = site;
 
+// 从配置中获取分类映射
+const getCategoryHref = (category: string) => {
+  const config = configData as Config;
+  return config.categoryMap[category] || category;
+};
+
 // 从 URL 生成 logo URL
 const getFaviconUrl = (siteUrl: string): string => {
   if (!siteUrl) return '';
@@ -72,7 +78,11 @@ const logoUrl = getFaviconUrl(url);
       <nav class="mb-4 text-sm text-gray-500">
         <a href="/" class="hover:text-blue-600">首页</a>
         <span class="mx-2">/</span>
-        <a href={`/#${category}`} class="hover:text-blue-600">{category}</a>
+        <a href={`/#${getCategoryHref(category)}`} 
+          class="hover:text-blue-600"
+        >
+          {category}
+        </a>
         {subcategory && (
           <>
             <span class="mx-2">/</span>

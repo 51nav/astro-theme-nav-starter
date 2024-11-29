@@ -34,6 +34,9 @@ export interface Config {
       href: string;
     };
   };
+  categoryMap: {
+    [key: string]: string;
+  };
   menuItems: MenuItem[];
 }
 
