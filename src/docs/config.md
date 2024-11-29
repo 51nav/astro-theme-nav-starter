@@ -237,3 +237,144 @@ mdi:email           // 邮件
 mdi:file            // 文件
 mdi:folder          // 文件夹
 mdi:link            // 链接
+
+
+## 菜单映射配置 (categoryMap)
+
+`categoryMap` 用于将中文菜单名称映射到英文路径，这对于 URL 的规范性和国际化很重要。
+
+### 配置结构
+```json
+{
+  "categoryMap": {
+    "中文菜单名": "english-path"
+  }
+}
+```
+
+### 当前配置示例
+```json
+{
+  "categoryMap": {
+    "追踪系统": "tracking",
+    "SPY服务": "spy",
+    "流量平台": "traffic",
+    "综合性联盟": "networks"
+  }
+}
+```
+
+### 配置说明
+
+1. **映射规则**
+   - 键(key): 必须与菜单项的 `name` 属性完全匹配
+   - 值(value): 用作 URL 路径的英文标识符
+   
+2. **使用场景**
+   - 生成面包屑导航链接
+   - 生成锚点链接
+   - URL 路由匹配
+
+3. **添加新菜单映射**
+   ```json
+   {
+     "categoryMap": {
+       "追踪系统": "tracking",
+       "SPY服务": "spy",
+       "流量平台": "traffic",
+       "综合性联盟": "networks",
+       "新菜单名称": "new-category"  // 添加新映射
+     }
+   }
+   ```
+
+4. **命名规范**
+   - 使用小写字母
+   - 多个单词用连字符(-)连接
+   - 避免使用特殊字符和空格
+   - 保持简短且有描述性
+
+5. **注意事项**
+   - 添加新映射后需要同时更新相应的菜单配置
+   - 确保映射值唯一，避免重复
+   - 修改现有映射需要同时更新所有相关链接
+
+### 完整示例
+
+```json
+{
+  "site": {
+    "title": "Affiliate导航",
+    "description": "无忧导航"
+  },
+  "categoryMap": {
+    "追踪系统": "tracking",
+    "SPY服务": "spy",
+    "流量平台": "traffic",
+    "综合性联盟": "networks"
+  },
+  "menuItems": [
+    {
+      "name": "追踪系统",
+      "href": "#tracking",  // 使用映射值
+      "icon": "mdi:chart-line",
+      "type": "single"
+    }
+  ]
+}
+```
+
+### 使用方法
+
+1. **添加新类别**
+   ```json
+   // 1. 在 categoryMap 中添加映射
+   "categoryMap": {
+     "新类别": "new-category"
+   }
+
+   // 2. 在 menuItems 中添加对应菜单
+   "menuItems": [
+     {
+       "name": "新类别",
+       "href": "#new-category",
+       "icon": "mdi:icon-name",
+       "type": "single"
+     }
+   ]
+   ```
+
+2. **修改现有类别**
+   ```json
+   // 1. 更新 categoryMap
+   "categoryMap": {
+     "追踪系统": "tracker"  // 修改映射值
+   }
+
+   // 2. 更新对应菜单的 href
+   "menuItems": [
+     {
+       "name": "追踪系统",
+       "href": "#tracker",  // 同步修改
+       "icon": "mdi:chart-line",
+       "type": "single"
+     }
+   ]
+   ```
+
+### 技术实现
+
+此映射在以下组件中使用：
+1. `[slug].astro`: 用于生成面包屑导航
+2. `Sidebar.astro`: 用于生成菜单链接
+3. 其他需要处理类别路由的组件
+
+```typescript
+// 使用示例
+const getCategoryHref = (category: string) => {
+  return config.categoryMap[category] || category;
+};
+```
+```
+
+
