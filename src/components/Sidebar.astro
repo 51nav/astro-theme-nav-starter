@@ -103,15 +103,14 @@ const { menuItems } = configData as { menuItems: MenuItem[] };
 
         // 如果不在首页，先返回首页
         if (!window.location.pathname.endsWith('/')) {
-          window.location.href = `/${href}`;
+          window.location.href = `/${href.replace(/^#/, '')}`;
           return;
         }
 
-        // 在首页时滚动到对应区域
-        const targetId = href.replace('#', '');
-        const targetElement = document.getElementById(targetId);
-        if (targetElement) {
-          targetElement.scrollIntoView({ behavior: 'smooth' });
+        // 在首页时平滑滚动到目标位置
+        const target = document.querySelector(href);
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth' });
         }
       });
     });
