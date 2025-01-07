@@ -58,9 +58,9 @@
 }
 
 .panel[data-active="false"] {
-  display: none;
+  display: none !important;
 }
 
 .panel[data-active="true"] {
-  display: grid;
+  display: grid !important;
 } 

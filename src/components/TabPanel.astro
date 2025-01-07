@@ -35,6 +35,7 @@ const { tabs } = Astro.props;
         data-index={index}
         data-active={index === 0}
         data-tab-panel
+        style={`display: ${index === 0 ? 'grid' : 'none'}`}
       >
         {tab.sites.map(site => (
           <NavCard {...site} />
