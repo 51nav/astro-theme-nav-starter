@@ -14,9 +14,11 @@ export const getStaticPaths = (async () => {
   config.menuItems.forEach(item => {
     if (item.type === 'single' && item.sites) {
       item.sites.forEach(site => {
-        const slug = site.title.toLowerCase().replace(/\s+/g, '-');
+        // 生成两种格式的 slug
+        const dashSlug = site.title.toLowerCase().replace(/\s+/g, '-');
+        
         paths.push({
-          params: { slug },
+          params: { slug: dashSlug },
           props: { site, category: item.name }
         });
       });
@@ -24,9 +26,10 @@ export const getStaticPaths = (async () => {
     if (item.type === 'tabs' && item.submenu) {
       item.submenu.forEach(subItem => {
         subItem.sites.forEach(site => {
-          const slug = site.title.toLowerCase().replace(/\s+/g, '-');
+          const dashSlug = site.title.toLowerCase().replace(/\s+/g, '-');
+          
           paths.push({
-            params: { slug },
+            params: { slug: dashSlug },
             props: { site, category: item.name, subcategory: subItem.name }
           });
         });

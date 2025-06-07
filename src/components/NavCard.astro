@@ -29,7 +29,7 @@ const getFaviconUrl = (siteUrl: string): string => {
     onerror={`this.onerror=null; this.src='https://${new URL(url).hostname}/favicon.ico'`}
   />
   <a 
-    href={`/sites/${encodeURIComponent(title.toLowerCase())}`} 
+    href={`/sites/${title.toLowerCase().replace(/\s+/g, '-')}`} 
     class={styles.link}
     data-no-scroll
   >
