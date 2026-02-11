@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import Giscus from '../../components/Giscus.astro';
 ---
 
 <Layout title="收录提交 - Affiliate导航" description="提交网站收录申请">
@@ -81,12 +82,19 @@ import Layout from '../../layouts/Layout.astro';
         </button>
       </form>
 
-      <!-- 评论区容器 -->
       <div class="mt-8 pt-8 border-t">
         <p class="text-sm text-gray-500 mb-4">
           请在下方评论区提交您的网站信息，我们会尽快审核。
         </p>
-        <div class="giscus"></div>
+        <Giscus
+          repo="51nav/51nav.github.io"
+          repoId="R_kgDONT50Hg"
+          category="Announcements"
+          categoryId="DIC_kwDONT50Hs4CkpQJ"
+          mapping="title"
+          theme="noborder_dark"
+          inputPosition="top"
+        />
       </div>
     </div>
   </div>
@@ -94,11 +102,14 @@ import Layout from '../../layouts/Layout.astro';
 
 <script is:inline>
   const form = document.getElementById('submitForm');
-  
+
   form?.addEventListener('submit', (e) => {
     e.preventDefault();
-    
-    const formData = new FormData(e.target);
+
+    const target = e.target;
+    if (!(target instanceof HTMLFormElement)) return;
+
+    const formData = new FormData(target);
     const data = {
       title: formData.get('title'),
       url: formData.get('url'),
@@ -106,8 +117,7 @@ import Layout from '../../layouts/Layout.astro';
       advantages: formData.get('advantages')?.toString().split('\n').filter(Boolean),
       category: formData.get('category')
     };
-    
-    // 格式化提交内容
+
     const content = `
 ### 网站提交
 
@@ -117,51 +127,30 @@ import Layout from '../../layouts/Layout.astro';
 - **分类**：${data.category}
 
 #### 优势特点：
-${data.advantages?.map(adv => '- ' + adv).join('\n')}
+${data.advantages?.map((adv) => '- ' + adv).join('\n')}
 
 ---
 请审核，谢谢！
     `.trim();
 
-    // 等待 giscus iframe 加载完成
     const waitForIframe = setInterval(() => {
-      const iframe = document.querySelector('iframe.giscus-frame');
+      const iframe = document.querySelector<HTMLIFrameElement>('iframe.giscus-frame');
       if (iframe?.contentWindow) {
         clearInterval(waitForIframe);
-        
-        // 将格式化的内容发送到评论框
-        iframe.contentWindow.postMessage({ 
-          giscus: { 
-            setComment: content
-          } 
-        }, 'https://giscus.app');
 
-        // 清空表单
-        e.target.reset();
+        iframe.contentWindow.postMessage(
+          {
+            giscus: {
+              setComment: content
+            }
+          },
+          'https://giscus.app'
+        );
+
+        target.reset();
       }
     }, 1000);
 
-    // 5秒后停止等待
     setTimeout(() => clearInterval(waitForIframe), 5000);
   });
 </script>
-
-<!-- Giscus 脚本 -->
-<script is:inline
-src="https://giscus.app/client.js"
-        data-repo="51nav/51nav.github.io"
-        data-repo-id="R_kgDONT50Hg"
-        data-category="Announcements"
-        data-category-id="DIC_kwDONT50Hs4CkpQJ"
-        data-mapping="title"
-        data-strict="0"
-        data-reactions-enabled="1"
-        data-emit-metadata="0"
-        data-input-position="top"
-        data-theme="noborder_dark"
-        data-lang="zh-CN"
-        data-loading="lazy"
-        crossorigin="anonymous"
-        async>
-</script>
-

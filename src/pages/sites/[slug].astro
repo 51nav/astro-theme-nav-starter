@@ -1,38 +1,43 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import type { GetStaticPaths } from 'astro';
-import type { Config, StaticPath, Site } from '../../types/config';
+import type { Config, Site } from '../../types/config';
 import configData from '../../data/config.json';
 import Giscus from '../../components/Giscus.astro';
 import QRCode from '../../components/QRCode.astro';
+import slugify from '../../utils/slug';
+import getFaviconUrl, { getDomain } from '../../utils/favicon';
 
 export const getStaticPaths = (async () => {
   const config = configData as Config;
-  const paths = [];
+  const paths: {
+    params: { slug: string };
+    props: { site: Site; category: string; subcategory?: string };
+  }[] = [];
+  const usedSlugs = new Set<string>();
 
-  // 遍历所有菜单项收集网站
-  config.menuItems.forEach(item => {
-    if (item.type === 'single' && item.sites) {
-      item.sites.forEach(site => {
-        // 生成两种格式的 slug
-        const dashSlug = site.title.toLowerCase().replace(/\s+/g, '-');
-        
-        paths.push({
-          params: { slug: dashSlug },
-          props: { site, category: item.name }
-        });
-      });
+  const pushPath = (site: Site, category: string, subcategory?: string) => {
+    const slug = slugify(site.title);
+
+    if (usedSlugs.has(slug)) {
+      throw new Error(`发现重复 slug: ${slug}（站点：${site.title}）`);
     }
+
+    usedSlugs.add(slug);
+    paths.push({
+      params: { slug },
+      props: { site, category, subcategory }
+    });
+  };
+
+  config.menuItems.forEach((item) => {
+    if (item.type === 'single' && item.sites) {
+      item.sites.forEach((site) => pushPath(site, item.name));
+    }
+
     if (item.type === 'tabs' && item.submenu) {
-      item.submenu.forEach(subItem => {
-        subItem.sites.forEach(site => {
-          const dashSlug = site.title.toLowerCase().replace(/\s+/g, '-');
-          
-          paths.push({
-            params: { slug: dashSlug },
-            props: { site, category: item.name, subcategory: subItem.name }
-          });
-        });
+      item.submenu.forEach((subItem) => {
+        subItem.sites.forEach((site) => pushPath(site, item.name, subItem.name));
       });
     }
   });
@@ -40,50 +45,25 @@ export const getStaticPaths = (async () => {
   return paths;
 }) satisfies GetStaticPaths;
 
-interface Props {
-  site: Site;
-  category: string;
-  subcategory?: string;
-}
-
 const { site, category, subcategory } = Astro.props;
 const { title, description, url } = site;
 
-// 从配置中获取分类映射
-const getCategoryHref = (category: string) => {
+const getCategoryHref = (categoryName: string) => {
   const config = configData as Config;
-  return config.categoryMap[category] || category;
+  return config.categoryMap[categoryName] || categoryName;
 };
 
-// 从 URL 生成 logo URL
-const getFaviconUrl = (siteUrl: string): string => {
-  if (!siteUrl) return '';
-
-  try {
-    const domain = new URL(siteUrl).hostname;
-    if (!domain) return '';
-    
-    // 直接返回 Google API 作为初始值
-    return `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
-  } catch {
-    return '';
-  }
-};
-
-const logoUrl = getFaviconUrl(url);
-
+const domain = getDomain(url);
+const logoUrl = getFaviconUrl(url, 128);
 ---
 
 <Layout title={`${title} - Affiliate导航`} description={description}>
   <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <div class="bg-white rounded-lg shadow-sm p-6">
-      <!-- 面包屑导航 -->
       <nav class="mb-4 text-sm text-gray-500">
         <a href="/" class="hover:text-blue-600">首页</a>
         <span class="mx-2">/</span>
-        <a href={`/#${getCategoryHref(category)}`} 
-          class="hover:text-blue-600"
-        >
+        <a href={`/#${getCategoryHref(category)}`} class="hover:text-blue-600">
           {category}
         </a>
         {subcategory && (
@@ -94,28 +74,27 @@ const logoUrl = getFaviconUrl(url);
         )}
       </nav>
 
-      <!-- 网站信息 -->
       <div class="flex items-start gap-6">
         <div class="bg-white rounded-lg">
-          <img 
-            src={logoUrl} 
-            alt={title} 
-            width="64" 
-            height="64" 
+          <img
+            src={logoUrl}
+            alt={title}
+            width="64"
+            height="64"
             class="rounded-lg object-contain"
             loading="eager"
             decoding="sync"
-            data-domain={new URL(url).hostname}
-            onerror="const domain = this.getAttribute('data-domain'); if (domain) { const sources = ['https://' + domain + '/favicon.ico', 'https://api.iowen.cn/favicon/' + domain + '.png', 'https://icon.horse/icon/' + domain, 'https://favicons.githubusercontent.com/' + domain]; let index = 0; const tryNextSource = () => { if (index < sources.length) { this.src = sources[index++]; } else { this.style.display = 'none'; } }; this.onerror = tryNextSource; tryNextSource(); } else { this.style.display = 'none'; }"
+            data-domain={domain}
+            data-fallback-favicons
           />
         </div>
         <div class="flex-1">
           <h1 class="text-2xl font-bold text-gray-900 mb-2">{title}</h1>
           <p class="text-gray-500 mb-4">{description}</p>
           <div class="flex items-center gap-4">
-            <a 
-              href={url} 
-              target="_blank" 
+            <a
+              href={url}
+              target="_blank"
               rel="noopener noreferrer"
               class="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700"
             >
@@ -144,11 +123,10 @@ const logoUrl = getFaviconUrl(url);
         <QRCode url={url} title={title} />
       </div>
 
-      <!-- 优势列表 -->
       <div class="mt-8">
         <h2 class="text-lg font-semibold text-gray-900 mb-4">优势:</h2>
         <ul class="space-y-2 text-gray-600">
-          {site.advantages?.map(advantage => (
+          {site.advantages?.map((advantage: string) => (
             <li class="flex items-start gap-2">
               <svg class="w-5 h-5 text-green-500 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
@@ -159,13 +137,12 @@ const logoUrl = getFaviconUrl(url);
         </ul>
       </div>
 
-      <!-- 相关推荐 -->
       <div class="mt-8">
         <h2 class="text-lg font-semibold text-gray-900 mb-4">相关导航</h2>
         <div class="grid sm:grid-cols-2 gap-4">
-          {site.related?.map(item => (
-            <a 
-              href={`/sites/${item.title.toLowerCase().replace(/\s+/g, '-')}`}
+          {site.related?.map((item: { title: string; description: string }) => (
+            <a
+              href={`/sites/${slugify(item.title)}`}
               class="block p-4 border border-gray-200 rounded-lg hover:border-blue-500 hover:shadow-sm transition-all"
             >
               <div class="font-medium text-gray-900">{item.title}</div>
@@ -175,7 +152,6 @@ const logoUrl = getFaviconUrl(url);
         </div>
       </div>
 
-      <!-- 添加评论区 -->
       <div class="mt-8">
         <Giscus
           repo="51nav/51nav.github.io"
@@ -191,15 +167,36 @@ const logoUrl = getFaviconUrl(url);
 </Layout>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', () => {
     const showQRCode = document.getElementById('showQRCode');
     const qrCodeDisplay = document.getElementById('qrCodeDisplay');
-    
+
     if (showQRCode && qrCodeDisplay) {
-      showQRCode.addEventListener('click', function() {
+      showQRCode.addEventListener('click', () => {
         qrCodeDisplay.classList.toggle('hidden');
       });
     }
+
+    document.querySelectorAll('[data-fallback-favicons]').forEach((imgEl) => {
+      const image = imgEl as HTMLImageElement;
+      const host = image.dataset.domain;
+      if (!host) return;
+
+      const sources = [
+        `https://${host}/favicon.ico`,
+        `https://api.iowen.cn/favicon/${host}.png`,
+        `https://icon.horse/icon/${host}`,
+        `https://favicons.githubusercontent.com/${host}`
+      ];
+
+      let index = 0;
+      image.addEventListener('error', () => {
+        if (index < sources.length) {
+          image.src = sources[index++];
+        } else {
+          image.style.display = 'none';
+        }
+      });
+    });
   });
 </script>
------ 
