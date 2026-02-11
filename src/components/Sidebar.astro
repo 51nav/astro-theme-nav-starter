@@ -5,11 +5,6 @@ import configData from '../data/config.json';
 import IconComponent from './IconComponent.astro';
 
 const { menuItems } = configData as { menuItems: MenuItem[] };
-
-// 生成完整的 URL
-const getFullUrl = (href: string) => {
-  return window.location.origin + '/' + href.replace(/^\//, '');
-};
 ---
 
 <aside class={styles.sidebar}>
@@ -25,9 +20,9 @@ const getFullUrl = (href: string) => {
               data-type="main"
               data-scroll
             >
-              <IconComponent 
-                icon={item.icon || ''} 
-                class={styles.icon || undefined} 
+              <IconComponent
+                icon={item.icon || ''}
+                class={styles.icon || undefined}
               />
               <span class={styles.text}>{item.name}</span>
             </a>
@@ -41,9 +36,9 @@ const getFullUrl = (href: string) => {
                 aria-expanded="false"
                 data-submenu-trigger
               >
-                <IconComponent 
-                  icon={item.icon || ''} 
-                  class={styles.icon || undefined} 
+                <IconComponent
+                  icon={item.icon || ''}
+                  class={styles.icon || undefined}
                 />
                 <span class={styles.text}>{item.name}</span>
                 <span class={styles.arrow}>
@@ -81,22 +76,51 @@ const getFullUrl = (href: string) => {
 </aside>
 
 <script>
-  // 生成完整的 URL
-  function getFullUrl(href: string) {
-    return window.location.origin + '/' + href.replace(/^\//, '');
+  function toFullHomeHashUrl(href: string) {
+    return `${window.location.origin}/${href.replace(/^\//, '')}`;
   }
 
-  // 初始化侧边栏
+  function scrollToHash(hash: string) {
+    const section = document.querySelector(hash);
+    if (!section) return false;
+
+    const headerOffset = 64;
+    const rect = section.getBoundingClientRect();
+    const scrollY = window.scrollY + rect.top - headerOffset;
+
+    window.scrollTo({
+      top: scrollY,
+      behavior: 'smooth'
+    });
+
+    return true;
+  }
+
+  function handleAnchorNavigation(href: string) {
+    const hash = href.startsWith('/#') ? href.slice(1) : href;
+    const isHome = window.location.pathname === '/';
+
+    if (isHome && hash.startsWith('#')) {
+      const found = scrollToHash(hash);
+      if (found) {
+        history.replaceState(null, '', hash);
+        return;
+      }
+    }
+
+    window.location.href = toFullHomeHashUrl(href);
+  }
+
   function initSidebar() {
-    const menuButtons = document.querySelectorAll('[data-submenu-trigger]');
-    menuButtons.forEach(button => {
+    const menuButtons = document.querySelectorAll<HTMLElement>('[data-submenu-trigger]');
+    menuButtons.forEach((button) => {
       button.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
-        
+
         const isExpanded = button.getAttribute('aria-expanded') === 'true';
         button.setAttribute('aria-expanded', (!isExpanded).toString());
-        
+
         const submenu = button.nextElementSibling;
         if (submenu) {
           submenu.setAttribute('data-expanded', (!isExpanded).toString());
@@ -104,18 +128,18 @@ const getFullUrl = (href: string) => {
       });
     });
 
-    // 处理导航点击
-    document.querySelectorAll('a[data-scroll]').forEach(link => {
+    document.querySelectorAll<HTMLAnchorElement>('a[data-scroll]').forEach((link) => {
       link.addEventListener('click', (e) => {
-        e.preventDefault();
         const href = link.getAttribute('href');
         if (!href) return;
 
-        // 统一处理：总是跳转到首页对应的锚点
-        window.location.href = getFullUrl(href);
+        if (href.startsWith('/#')) {
+          e.preventDefault();
+          handleAnchorNavigation(href);
+        }
       });
     });
   }
 
   document.addEventListener('DOMContentLoaded', initSidebar);
-</script> 
+</script>

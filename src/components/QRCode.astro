@@ -7,7 +7,7 @@ interface Props {
 const { url, title } = Astro.props;
 ---
 
-<div class="qr-modal" id="qrModal">
+<div class="qr-modal" id="qrModal" data-url={url}>
   <div class="qr-content">
     <div class="qr-header">
       <h3>手机扫码访问</h3>
@@ -21,15 +21,12 @@ const { url, title } = Astro.props;
 </div>
 
 <script>
-  // 动态导入 QRCode
-  import QRCode from 'qrcode';
-
   document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById('qrModal');
     const showButton = document.getElementById('showQRCode');
     const closeButton = document.getElementById('closeQRCode');
     const qrContainer = document.getElementById('qrCode');
-    
+
     const clearQRCode = () => {
       if (qrContainer) {
         while (qrContainer.firstChild) {
@@ -40,11 +37,10 @@ const { url, title } = Astro.props;
 
     const generateQRCode = async () => {
       clearQRCode();
-      
+
       if (qrContainer) {
-        const button = document.getElementById('showQRCode');
-        const siteUrl = button?.dataset.url;
-        
+        const siteUrl = modal?.getAttribute('data-url');
+
         if (!siteUrl) {
           const message = document.createElement('div');
           message.style.padding = '2rem';
@@ -55,8 +51,9 @@ const { url, title } = Astro.props;
         }
 
         try {
+          const { default: QRCode } = await import('qrcode');
+
           const canvas = document.createElement('canvas');
-          // 添加加载提示
           const loadingMsg = document.createElement('div');
           loadingMsg.textContent = '正在生成二维码...';
           loadingMsg.style.color = '#666';
@@ -71,35 +68,35 @@ const { url, title } = Astro.props;
             }
           });
 
-          // 移除加载提示
           qrContainer.removeChild(loadingMsg);
 
-          // 添加 logo
           const ctx = canvas.getContext('2d');
           const size = 200;
-          const centerSize = size * 0.25; // logo 大小为二维码的 25%
+          const centerSize = size * 0.25;
           const centerPos = (size - centerSize) / 2;
-          
-          // 绘制白色背景
-          ctx.fillStyle = '#FFFFFF';
-          ctx.beginPath();
-          ctx.roundRect(centerPos - 4, centerPos - 4, centerSize + 8, centerSize + 8, 8);
-          ctx.fill();
 
-          // 创建并绘制 logo
-          const logo = new Image();
-          logo.onload = () => {
-            ctx.save();
+          if (ctx) {
+            ctx.fillStyle = '#FFFFFF';
             ctx.beginPath();
-            ctx.roundRect(centerPos, centerPos, centerSize, centerSize, 6);
-            ctx.clip();
-            ctx.drawImage(logo, centerPos, centerPos, centerSize, centerSize);
-            ctx.restore();
-          };
-          logo.src = 'https://www.google.com/s2/favicons?domain=' + new URL(siteUrl).hostname + '&sz=128';
+            ctx.roundRect(centerPos - 4, centerPos - 4, centerSize + 8, centerSize + 8, 8);
+            ctx.fill();
+
+            const logo = new Image();
+            logo.onload = () => {
+              ctx.save();
+              ctx.beginPath();
+              ctx.roundRect(centerPos, centerPos, centerSize, centerSize, 6);
+              ctx.clip();
+              ctx.drawImage(logo, centerPos, centerPos, centerSize, centerSize);
+              ctx.restore();
+            };
+            logo.src = `https://www.google.com/s2/favicons?domain=${new URL(siteUrl).hostname}&sz=128`;
+          }
 
           qrContainer.appendChild(canvas);
-          modal.style.display = 'flex';
+          if (modal) {
+            modal.style.display = 'flex';
+          }
         } catch (error) {
           console.error('Failed to generate QR code:', error);
         }
@@ -111,7 +108,9 @@ const { url, title } = Astro.props;
     });
 
     closeButton?.addEventListener('click', () => {
-      modal.style.display = 'none';
+      if (modal) {
+        modal.style.display = 'none';
+      }
       clearQRCode();
     });
 
@@ -187,4 +186,4 @@ const { url, title } = Astro.props;
     color: #666;
     font-size: 0.9rem;
   }
-</style> 
+</style>
